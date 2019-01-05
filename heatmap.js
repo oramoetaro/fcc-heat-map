@@ -5,10 +5,7 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
   const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
   const w = $("#map").width();
   const h = 400;
-  const tPadding = 100;
-  const rPadding = 10;
-  const bPadding = 20;
-  const lPadding = 60;
+  const padding = {t: 100, r: 10, b: 20, l: 60};
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", url, true);
@@ -31,11 +28,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
 
     const xScale = d3.scaleLinear()
       .domain([xMin, xMax])
-      .range([lPadding, w - rPadding]);
+      .range([padding.l, w - padding.r]);
 
     const yScale = d3.scaleLinear()
       .domain([yMin - 0.5, yMax + 0.5])
-      .range([tPadding, h - bPadding]);
+      .range([padding.t, h - padding.b]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale)
@@ -52,8 +49,8 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       .append("rect")
       .attr("x", (d) => xScale(d.year))
       .attr("y", (d) => yScale(d.month - 0.5))
-      .attr("width", (w - lPadding - rPadding) / (xMax - xMin))
-      .attr("height", (h - tPadding - bPadding) / 12)
+      .attr("width", (w - padding.l - padding.r) / (xMax - xMin))
+      .attr("height", (h - padding.t - padding.b) / 12)
       .attr("data-month", (d) => d.month)
       .attr("data-year", (d) => d.year)
       .attr("data-temp", (d) => d.variance + tBase)
@@ -65,11 +62,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       );
 
     map.append("g")
-      .attr("transform", `translate(0, ${h-bPadding})`)
+      .attr("transform", `translate(0, ${h-padding.b})`)
       .call(xAxis);
 
     map.append("g")
-      .attr("transform", `translate(${lPadding}, 0)`)
+      .attr("transform", `translate(${padding.l}, 0)`)
       .call(yAxis);
 
     // $("#map").text(JSON.stringify(dataset));
