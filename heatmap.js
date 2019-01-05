@@ -4,9 +4,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
   const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json";
   const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
   const w = $("#map").width();
-  const h = 350;
-  const xPadding = 60;
-  const yPadding = 20;
+  const h = 400;
+  const tPadding = 100;
+  const rPadding = 10;
+  const bPadding = 20;
+  const lPadding = 60;
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", url, true);
@@ -29,11 +31,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
 
     const xScale = d3.scaleLinear()
       .domain([xMin, xMax])
-      .range([xPadding, w - xPadding]);
+      .range([lPadding, w - rPadding]);
 
     const yScale = d3.scaleLinear()
       .domain([yMin - 0.5, yMax + 0.5])
-      .range([yPadding, h - yPadding]);
+      .range([tPadding, h - bPadding]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale)
@@ -50,8 +52,8 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       .append("rect")
       .attr("x", (d) => xScale(d.year))
       .attr("y", (d) => yScale(d.month - 0.5))
-      .attr("width", (w - 2 * xPadding) / (xMax - xMin))
-      .attr("height", (h - 2 * yPadding) / 12)
+      .attr("width", (w - lPadding - rPadding) / (xMax - xMin))
+      .attr("height", (h - tPadding - bPadding) / 12)
       .attr("data-month", (d) => d.month)
       .attr("data-year", (d) => d.year)
       .attr("data-temp", (d) => d.variance + tBase)
@@ -63,11 +65,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       );
 
     map.append("g")
-      .attr("transform", `translate(0, ${h-yPadding})`)
+      .attr("transform", `translate(0, ${h-bPadding})`)
       .call(xAxis);
 
     map.append("g")
-      .attr("transform", `translate(${xPadding}, 0)`)
+      .attr("transform", `translate(${lPadding}, 0)`)
       .call(yAxis);
 
     // $("#map").text(JSON.stringify(dataset));
