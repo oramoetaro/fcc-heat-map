@@ -1,6 +1,7 @@
+const yAxisLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 (function () {
   const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json";
-  const yAxisLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
   const w = $("#map").width();
   const h = 350;
@@ -51,7 +52,12 @@
       .attr("y", (d) => yScale(d.month - 0.5))
       .attr("width", (w - 2 * xPadding) / (xMax - xMin))
       .attr("height", (h - 2 * yPadding) / 12)
+      .attr("data-month", (d) => d.month)
+      .attr("data-year", (d) => d.year)
+      .attr("data-temp", (d) => d.variance + tBase)
       .attr("class", "cell")
+      .attr("onmouseover", "tooltip(this)")
+      .attr("onmouseout", "$('#tooltip').hide()")
       .attr("fill", (d) =>
         scheme[Math.floor(cScale(d.variance))]
       );
@@ -65,5 +71,19 @@
       .call(yAxis);
 
     // $("#map").text(JSON.stringify(dataset));
+
   };
 })();
+
+function tooltip(rect) {
+  const e = $(rect);
+  const t = parseFloat(e.attr("data-temp"));
+  const x = parseInt(e.attr("x")) + 40 + "px";
+  const y = e.attr("y") + "px";
+  const month = parseInt(e.attr("data-month")) - 1;
+
+  $("#month").text(yAxisLabels[month]);
+  $("#year").text(e.attr("data-year"));
+  $("#temp").text("Temp: " + t.toFixed(2) + " °C");
+  $("#tooltip").show().css("left", x).css("top", y);
+}

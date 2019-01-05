@@ -9,16 +9,27 @@
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
     crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <header class="container py-5 text-center">
     <h1 id="title">Monthly Global Land-Surface Temperature</h1>
     <p id="description">1753 - 2015: base temperature 8.66℃</p>
-    <p class="small">Developed by <a href="https://www.linkedin.com/in/omar-pacheco" target="_blank">Omar Pacheco</a></p>
+    <p class="small">Developed by <a href="https://www.linkedin.com/in/omar-pacheco" target="_blank">oramoetaro</a></p>
   </header>
 
-  <section id="map" class="container"></section>
+  <section id="map" class="container position-relative">
+    <div id="tooltip" class="p-3 rounded text-center hide">
+      <p class="m-0">
+        <span id="month"></span> - <span id="year"></span>
+      </p>
+      <p class="m-0">
+        <span id="temp"></span>
+      </p>
+    </div>
+  </section>
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
