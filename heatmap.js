@@ -1,6 +1,7 @@
 (function () {
   const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json";
   const yAxisLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
   const w = $("#map").width();
   const h = 350;
   const xPadding = 60;
@@ -14,15 +15,16 @@
     const baseT = json.baseTemperature;
     const dataset = json.monthlyVariance;
 
+    const xMin = d3.min(dataset, (d) => d.year);
+    const xMax = d3.max(dataset, (d) => d.year);
+
     const xScale = d3.scaleLinear()
-      .domain([
-        d3.min(dataset, (d) => d.year),
-        d3.max(dataset, (d) => d.year)
-      ])
-      .range([xPadding, w]);
+      .domain([xMin, xMax])
+      .range([xPadding, w - xPadding]);
 
     const yScale = d3.scaleLinear()
-      .domain([1, 12]).range([yPadding, h - yPadding]);
+      .domain([0.5, 12.5])
+      .range([yPadding, h - yPadding]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale)
@@ -37,7 +39,11 @@
       .data(dataset)
       .enter()
       .append("rect")
-      .attr("width", 0)
+      .attr("x", (d) => xScale(d.year))
+      .attr("y", (d) => yScale(d.month - 0.5))
+      .attr("width", (w - 2 * xPadding) / (xMax  -xMin))
+      .attr("height", (h - 2 * yPadding) / 12)
+      .attr("fill", "red")
       .attr("class", "cell");
 
     map.append("g")
@@ -48,6 +54,6 @@
       .attr("transform", `translate(${xPadding}, 0)`)
       .call(yAxis);
 
-    //$("#map").text(JSON.stringify(dataset));
+    // $("#map").text(JSON.stringify(dataset));
   };
 })();
