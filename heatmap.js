@@ -12,23 +12,31 @@
   xhttp.send();
   xhttp.onload = () => {
     const json = JSON.parse(xhttp.responseText);
-    const baseT = json.baseTemperature;
+    const tBase = json.baseTemperature;
     const dataset = json.monthlyVariance;
 
     const xMin = d3.min(dataset, (d) => d.year);
     const xMax = d3.max(dataset, (d) => d.year);
+    const yMin = d3.min(dataset, (d) => d.month);
+    const yMax = d3.max(dataset, (d) => d.month);
+    const vMin = d3.min(dataset, (d) => d.variance);
+    const vMax = d3.max(dataset, (d) => d.variance);
+
+    const cScale = d3.scaleLinear()
+      .domain([vMin, vMax])
+      .range([0, scheme.length - 1]);
 
     const xScale = d3.scaleLinear()
       .domain([xMin, xMax])
       .range([xPadding, w - xPadding]);
 
     const yScale = d3.scaleLinear()
-      .domain([0.5, 12.5])
+      .domain([yMin - 0.5, yMax + 0.5])
       .range([yPadding, h - yPadding]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale)
-    .tickFormat((d,i) => yAxisLabels[i]);
+      .tickFormat((d, i) => yAxisLabels[i]);
 
     const map = d3.select("#map")
       .append("svg")
@@ -41,10 +49,12 @@
       .append("rect")
       .attr("x", (d) => xScale(d.year))
       .attr("y", (d) => yScale(d.month - 0.5))
-      .attr("width", (w - 2 * xPadding) / (xMax  -xMin))
+      .attr("width", (w - 2 * xPadding) / (xMax - xMin))
       .attr("height", (h - 2 * yPadding) / 12)
-      .attr("fill", "red")
-      .attr("class", "cell");
+      .attr("class", "cell")
+      .attr("fill", (d) =>
+        scheme[Math.floor(cScale(d.variance))]
+      );
 
     map.append("g")
       .attr("transform", `translate(0, ${h-yPadding})`)
