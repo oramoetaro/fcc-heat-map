@@ -3,9 +3,14 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
 (function () {
   const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json";
   const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
+  const padding = {
+    t: 30,
+    r: 10,
+    b: 20,
+    l: 60
+  };
   const w = $("#map").width();
-  const h = 400;
-  const padding = {t: 100, r: 10, b: 20, l: 60};
+  const h = 450;
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", url, true);
@@ -62,14 +67,46 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       );
 
     map.append("g")
+      .attr("id", "x-axis")
       .attr("transform", `translate(0, ${h-padding.b})`)
       .call(xAxis);
 
     map.append("g")
+      .attr("id", "y-axis")
       .attr("transform", `translate(${padding.l}, 0)`)
       .call(yAxis);
 
-    // $("#map").text(JSON.stringify(dataset));
+    // I added the legend element in a separate SVG
+    const cell = 25;
+    const lScale = d3.scaleLinear()
+      .domain([vMin + tBase, vMax + tBase])
+      .range([
+        (w / 2) - (scheme.length / 2) * cell,
+        (w / 2) + (scheme.length / 2) * cell
+      ]);
+
+    const lAxis = d3.axisBottom(lScale)
+    .tickArguments([9, ".1f"]);
+
+    const legend = d3.select("#legend")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", cell + 20);
+
+    legend.selectAll("rect")
+      .data(scheme)
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) =>
+        (w / 2) + i * cell - (scheme.length / 2) * cell
+      ).attr("y", 0)
+      .attr("width", cell)
+      .attr("height", cell)
+      .attr("fill", (d) => d);
+
+    legend.append("g")
+      .attr("transform", `translate(0, ${cell})`)
+      .call(lAxis);
 
   };
 })();
@@ -84,5 +121,6 @@ function tooltip(rect) {
   $("#month").text(yAxisLabels[month]);
   $("#year").text(e.attr("data-year"));
   $("#temp").text("Temp: " + t.toFixed(2) + " °C");
-  $("#tooltip").show().css("left", x).css("top", y);
+  $("#tooltip").show().css("left", x).css("top", y)
+    .attr("data-year", e.attr("data-year"));
 }
