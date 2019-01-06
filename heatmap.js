@@ -39,7 +39,8 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       .domain([yMin - 0.5, yMax + 0.5])
       .range([padding.t, h - padding.b]);
 
-    const xAxis = d3.axisBottom(xScale);
+    const xAxis = d3.axisBottom(xScale)
+    .tickFormat(d3.format("d"));
     const yAxis = d3.axisLeft(yScale)
       .tickFormat((d, i) => yAxisLabels[i]);
 
