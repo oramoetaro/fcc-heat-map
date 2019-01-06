@@ -57,7 +57,7 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       .attr("y", (d) => yScale(d.month - 0.5))
       .attr("width", (w - padding.l - padding.r) / (xMax - xMin))
       .attr("height", (h - padding.t - padding.b) / 12)
-      .attr("data-month", (d) => d.month)
+      .attr("data-month", (d) => d.month - 1)
       .attr("data-year", (d) => d.year)
       .attr("data-temp", (d) => d.variance + tBase)
       .attr("class", "cell")
