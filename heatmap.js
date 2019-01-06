@@ -10,7 +10,7 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
     l: 60
   };
   const w = $("#map").width();
-  const h = 450;
+  const h = 400;
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", url, true);
@@ -78,6 +78,11 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
 
     // I added the legend element in a separate SVG
     const cell = 25;
+    const interval = (vMax - vMin) / scheme.length;
+    let ticks = [vMin + tBase];
+    // scheme.forEach(function(v,i) {
+    //   ticks.push();
+    // });
     const lScale = d3.scaleLinear()
       .domain([vMin + tBase, vMax + tBase])
       .range([
@@ -86,7 +91,7 @@ const yAxisLabels = ["January", "February", "March", "April", "May", "June", "Ju
       ]);
 
     const lAxis = d3.axisBottom(lScale)
-    .tickArguments([9, ".1f"]);
+    .tickValues(ticks);
 
     const legend = d3.select("#legend")
       .append("svg")
